@@ -30,7 +30,10 @@ class CachedUserRepository:
 
     def get_name(self, user_id: int) -> str:
         if user_id not in self.cache:
-            self.cache[user_id] = self.wrapped.get_name(user_id)
+            name = self.wrapped.get_name(user_id)
+            self.cache[user_id] = name
+            return name
+        
         return self.cache[user_id]
 
 

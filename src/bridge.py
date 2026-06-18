@@ -27,6 +27,8 @@ class SmsSender(Sender):
     def send(self, destination: str, body: str) -> None:
         print(f"sms to {destination}: {body}")
 
+ALERTS_LOG = []
+
 
 class Alert:
     def __init__(self, sender: Sender) -> None:
@@ -34,6 +36,7 @@ class Alert:
 
     def trigger(self, destination: str) -> None:
         self.sender.send(destination, self.message())
+        ALERTS_LOG.append((destination, self.message()))
 
     def message(self) -> str:
         raise NotImplementedError

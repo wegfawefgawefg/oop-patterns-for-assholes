@@ -5,34 +5,34 @@ What:
     Ensure one shared instance exists for a class.
 
 When / why:
-    Use carefully. It can be acceptable for process-wide infrastructure like a
-    metrics registry, but it is easy to overuse and makes tests harder.
+    Use carefully. It can be okay for one shared settings object in a small app
+    or game, but it is easy to overuse and can make tests annoying.
 """
 
 
-class MetricsRegistry:
-    _instance: "MetricsRegistry | None" = None
+class Bag:
+    def __init__(self) -> None:
+        self.items: list[str] = []
 
-    def __new__(cls) -> "MetricsRegistry":
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-            cls._instance.counters = {}
-        return cls._instance
+class Cum:
+    count: Bag | None = None
 
-    def increment(self, name: str) -> None:
-        self.counters[name] = self.counters.get(name, 0) + 1
+    def __init__(self) -> None:
+        
+        
+        if Cum.count is None:
+            Cum.count = Bag()
+        self.count = Cum.count
+
+
+        self.count.items.append("cum")
 
 
 def main() -> None:
-    web_handler_metrics = MetricsRegistry()
-    job_worker_metrics = MetricsRegistry()
-
-    web_handler_metrics.increment("http.requests")
-    job_worker_metrics.increment("http.requests")
-    job_worker_metrics.increment("jobs.completed")
-
-    print(web_handler_metrics.counters)
-    print(web_handler_metrics is job_worker_metrics)
+    c1 = Cum()
+    c2 = Cum()
+    print(c1.count.items)
+    print(c2.count.items)
 
 
 if __name__ == "__main__":
